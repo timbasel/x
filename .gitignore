@@ -1,0 +1,14 @@
+# Rust directories and files
+/target/
+Cargo.lock
+**/*.rs.bk
+
+# Editor directories and files
+.vscode/*
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
