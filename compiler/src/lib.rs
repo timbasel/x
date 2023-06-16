@@ -1,7 +1,13 @@
+#[path = "ast/ast.rs"]
+pub mod ast;
+#[path = "fmt/fmt.rs"]
+pub mod fmt;
 #[path = "lexer/lexer.rs"]
-mod lexer;
+pub mod lexer;
+#[path = "parser/parser.rs"]
+pub mod parser;
 #[path = "token/token.rs"]
-mod token;
+pub mod token;
 
-pub use lexer::*;
-pub use token::*;
+pub use lexer::Lexer;
+pub use parser::Parser;

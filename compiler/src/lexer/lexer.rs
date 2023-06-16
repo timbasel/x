@@ -3,7 +3,7 @@ mod error;
 use cursor::*;
 pub use error::*;
 
-use crate::token::{Span, Token};
+use crate::token::{Span, Token, TokenInfo};
 
 #[derive(Clone, Debug)]
 pub struct Lexer<'a> {
@@ -23,15 +23,14 @@ impl<'a> Lexer<'a> {
         };
     }
 
-    pub fn token(&self) -> Token {
-        return self.token.clone();
+    pub fn current(&self) -> TokenInfo {
+        return TokenInfo {
+            token: self.token.clone(),
+            position: self.position.clone(),
+        };
     }
 
-    pub fn position(&self) -> Span {
-        return self.position.clone();
-    }
-
-    pub fn next(&mut self) -> Result<Token> {
+    pub fn next(&mut self) -> Result<TokenInfo> {
         self.skip_whitespace();
 
         self.position.start = self.cursor.position();
@@ -94,10 +93,10 @@ impl<'a> Lexer<'a> {
         self.position.end = self.cursor.position();
 
         self.cursor.next();
-        return Ok(self.token());
+        return Ok(self.current());
     }
 
-    fn read_identifier(&mut self) -> Result<Token> {
+    fn read_identifier(&mut self) -> Result<TokenInfo> {
         let mut name = String::new();
 
         // first character must be a letter
@@ -115,14 +114,14 @@ impl<'a> Lexer<'a> {
         self.position.end = self.cursor.position().back(1);
         if let Some(keyword) = Token::match_keyword(&name) {
             self.token = keyword;
-            return Ok(self.token());
+            return Ok(self.current());
         } else {
             self.token = Token::Identifier(name);
-            return Ok(self.token());
+            return Ok(self.current());
         }
     }
 
-    fn read_number(&mut self) -> Result<Token> {
+    fn read_number(&mut self) -> Result<TokenInfo> {
         let mut number = String::new();
 
         while is_digit(self.cursor.current()) {
@@ -145,10 +144,10 @@ impl<'a> Lexer<'a> {
         }
 
         self.position.end = self.cursor.position().back(1);
-        return Ok(self.token());
+        return Ok(self.current());
     }
 
-    fn read_string(&mut self) -> Result<Token> {
+    fn read_string(&mut self) -> Result<TokenInfo> {
         self.cursor.next(); // skip "
 
         let mut string = String::new();
@@ -171,10 +170,10 @@ impl<'a> Lexer<'a> {
         self.token = Token::String(string);
 
         self.cursor.next(); // "
-        return Ok(self.token());
+        return Ok(self.current());
     }
 
-    fn read_line_comment(&mut self) -> Result<Token> {
+    fn read_line_comment(&mut self) -> Result<TokenInfo> {
         self.cursor.skip(2);
 
         let mut comment = String::new();
@@ -184,7 +183,7 @@ impl<'a> Lexer<'a> {
                 '\n' | '\0' => {
                     self.token = Token::LineComment(comment);
                     self.position.end = self.cursor.position().back(1);
-                    return Ok(self.token());
+                    return Ok(self.current());
                 }
                 _ => {
                     comment.push(self.cursor.current());
@@ -194,7 +193,7 @@ impl<'a> Lexer<'a> {
         }
     }
 
-    fn read_block_comment(&mut self) -> Result<Token> {
+    fn read_block_comment(&mut self) -> Result<TokenInfo> {
         self.cursor.skip(2);
 
         let mut comment = String::new();
@@ -206,7 +205,7 @@ impl<'a> Lexer<'a> {
                         self.cursor.skip(2);
                         self.token = Token::BlockComment(comment);
                         self.position.end = self.cursor.position().back(1);
-                        return Ok(self.token());
+                        return Ok(self.current());
                     } else {
                         comment.push(self.cursor.current());
                         self.cursor.next();
@@ -214,7 +213,7 @@ impl<'a> Lexer<'a> {
                 }
                 '/' => {
                     if self.cursor.peek() == '*' {
-                        if let Token::BlockComment(block) = self.read_block_comment()? {
+                        if let Token::BlockComment(block) = self.read_block_comment()?.token {
                             comment.push_str(&format!("/*{}*/", block));
                         } else {
                             panic!("Invalid `read_block_comment` return type");

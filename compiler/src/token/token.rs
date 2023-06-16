@@ -4,6 +4,29 @@ pub use position::*;
 use std::fmt;
 
 #[derive(Clone, Debug, PartialEq)]
+pub struct TokenInfo {
+    pub token: Token,
+    pub position: Span,
+}
+
+impl TokenInfo {
+    pub fn new() -> Self {
+        return Self {
+            token: Token::EOF,
+            position: Span::new(),
+        };
+    }
+
+    pub fn token(&self) -> Token {
+        return self.token.clone();
+    }
+
+    pub fn position(&self) -> Span {
+        return self.position.clone();
+    }
+}
+
+#[derive(Clone, Debug, PartialEq)]
 pub enum Token {
     Illegal,
     EOF,

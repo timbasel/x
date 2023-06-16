@@ -145,13 +145,13 @@ fn test(): string {
 fn assert_tokens_equal(source: &str, want: &[Token]) {
     let mut lexer = Lexer::new(source);
     let mut got = vec![];
-    while lexer.next().expect("failed to lex token") != EOF {
-        got.push((lexer.token(), lexer.position()));
+    while lexer.next().expect("failed to lex token").token != EOF {
+        got.push(lexer.current());
     }
 
-    for (want, (got, got_pos)) in want.iter().zip(&got) {
-        assert_eq!(want, got, "token not equal");
-        let got_literal = &source[got_pos.start.offset..got_pos.end.offset + 1];
+    for (want, got) in want.iter().zip(&got) {
+        assert_eq!(want, &got.token, "token not equal");
+        let got_literal = &source[got.position.start.offset..got.position.end.offset + 1];
         assert_eq!(
             want.to_string(),
             got_literal,

@@ -14,7 +14,7 @@ impl Position {
         return Self {
             offset: 0,
             line: 1,
-            line_offset: 1,
+            line_offset: 0,
         };
     }
 
