@@ -7,3 +7,7 @@ edition = "2021"
 
 [dependencies]
 pretty_assertions = { version = "1.2" }
+cranelift = "0.97.1"
+cranelift-module = "0.97.1"
+cranelift-jit = "0.97.1"
+cranelift-native = "0.97.1"

@@ -1,6 +1,7 @@
 use std::fmt;
 
 mod expression;
+mod function;
 mod statement;
 mod types;
 

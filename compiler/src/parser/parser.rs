@@ -5,6 +5,7 @@ use error::*;
 use precedence::*;
 
 mod expression;
+mod function;
 mod statement;
 mod types;
 

@@ -1,8 +1,10 @@
 mod expression;
+mod function;
 mod statement;
 mod types;
 
 pub use expression::*;
+pub use function::*;
 pub use statement::*;
 pub use types::*;
 

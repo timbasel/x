@@ -40,15 +40,3 @@ pub struct Assignment {
 pub struct Block {
     pub statements: Vec<Box<Statement>>,
 }
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct FunctionDeclaration {
-    pub name: String,
-    pub typ: FunctionType,
-    pub body: Block,
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct Return {
-    pub value: Box<Expression>,
-}
